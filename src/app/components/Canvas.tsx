@@ -2,7 +2,6 @@
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
 import { useCart } from './CartContext';
-const dropRef = useRef(null);
 
 export default function Canvas() {
   const [items, setItems] = useState<any[]>([]);
