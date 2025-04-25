@@ -1,11 +1,18 @@
 'use client';
+
 import { useDrop } from 'react-dnd';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from './CartContext';
 
 export default function Canvas() {
   const [items, setItems] = useState<any[]>([]);
   const { addToCart } = useCart();
+  const dropRef = useRef<HTMLDivElement | null>(null);
+
+  // ✅ Define handleDrop
+  const handleDrop = (item: any) => {
+    setItems((prevItems) => [...prevItems, item]);
+  };
 
   const [{ isOver }, drop] = useDrop({
     accept: 'clothing',
@@ -14,19 +21,18 @@ export default function Canvas() {
       isOver: monitor.isOver(),
     }),
   });
-  
+
   useEffect(() => {
     if (dropRef.current) {
       drop(dropRef.current);
     }
   }, [drop]);
-  
+
   const reset = () => setItems([]);
 
   return (
     <div ref={dropRef} className="flex flex-col items-center">
       <div
-        ref={(node) => drop(node)}
         className={`w-64 h-64 border rounded flex flex-wrap items-center justify-center bg-white ${
           isOver ? 'bg-blue-100' : ''
         }`}
