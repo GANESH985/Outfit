@@ -2,25 +2,32 @@
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
 import { useCart } from './CartContext';
+const dropRef = useRef(null);
 
 export default function Canvas() {
   const [items, setItems] = useState<any[]>([]);
   const { addToCart } = useCart();
 
-  const [{ isOver }, drop] = useDrop(() => ({
+  const [{ isOver }, drop] = useDrop({
     accept: 'clothing',
-    drop: (item: any) => setItems((prev) => [...prev, item]),
+    drop: (item) => handleDrop(item),
     collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
+      isOver: monitor.isOver(),
     }),
-  }));
-
+  });
+  
+  useEffect(() => {
+    if (dropRef.current) {
+      drop(dropRef.current);
+    }
+  }, [drop]);
+  
   const reset = () => setItems([]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div ref={dropRef} className="flex flex-col items-center">
       <div
-        ref={drop}
+        ref={(node) => drop(node)}
         className={`w-64 h-64 border rounded flex flex-wrap items-center justify-center bg-white ${
           isOver ? 'bg-blue-100' : ''
         }`}
